@@ -9,8 +9,8 @@ class Parameters{
 
     public static $PAGINATION_NUM_RECORDS = 4;
 
-    public static $BASE_URL = "http://localhost/Proyecto2.3/";
-
+    //public static $BASE_URL = "http://localhost/Proyecto2.3/";
+    public static $BASE_URL = "https://escanearqr-ajd9fzguedapgnhx.canadacentral-01.azurewebsites.net/";
     public static function getBasePath() {
         return $_SERVER['DOCUMENT_ROOT'] . "/Proyecto2.3/";
     }
