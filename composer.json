@@ -1,0 +1,22 @@
+{
+    "name": "mgj/proyecto-blog2025",
+    "description": "Blog MVC",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mgj\\ProyectoBlog2025\\Controllers\\": "src/controllers/",
+            "Mgj\\ProyectoBlog2025\\Models\\": "src/models/",
+            "Mgj\\ProyectoBlog2025\\Config\\": "src/config/",
+            "Mgj\\ProyectoBlog2025\\Database\\": "src/database/",
+            "Mgj\\ProyectoBlog2025\\Helpers\\": "src/helpers/",
+            "Mgj\\ProyectoBlog2025\\Entities\\": "src/entities/"
+
+        }
+    },
+    "require": {
+        "stefangabos/zebra_pagination": "^2.4",
+        "monolog/monolog": "^3.10",
+        "spipu/html2pdf": "^5.2"        
+    }
+}
