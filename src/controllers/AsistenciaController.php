@@ -12,7 +12,6 @@ class AsistenciaController {
     private $charlaModel;
 
     public function __construct() {
-        // Verificamos que el usuario esté logueado para cualquier acción de asistencia
         if (!Authentication::isUserLogged()) {
             header("Location: " . Parameters::getBaseUrl() . "index.php?controller=Usuario&action=showLogin");
             exit;
@@ -21,9 +20,38 @@ class AsistenciaController {
         $this->charlaModel = new CharlaModel(); 
     }
 
-    /**
-     * Muestra la vista del escáner QR
-     */
+    public function getAll() {
+        $asistentes = $this->model->getAll(); 
+        
+        require_once 'Views/asistencias/ver.php';
+    }
+
+    public function ver() {
+        $id_charla = $_GET['id'] ?? null;
+        
+        if (!$id_charla) {
+            header("Location: " . Parameters::getBaseUrl() . "index.php?controller=Asistencia&action=getAll");
+            exit; 
+        }
+
+        $sql = "SELECT a.ID_Asistencia, u.ID, u.Nombre, u.Apellidos, u.Email, a.Fecha_Registro 
+                FROM dbo.Tabla_Asistencia a
+                INNER JOIN dbo.Tabla_Usuarios_20260217095138 u ON a.ID_Alumno = u.ID
+                WHERE a.ID_Charla = :id_charla
+                ORDER BY a.Fecha_Registro DESC";
+
+        try {
+            $stmt = $this->model->getConn()->prepare($sql);
+            $stmt->execute([':id_charla' => $id_charla]);
+            $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+            require_once 'Views/asistencias/ver.php';
+            
+        } catch (\Exception $e) {
+            die("Error crítico de base de datos: " . $e->getMessage());
+        }
+    }
+
     public function lector() {
         $id_charla = $_GET['id'] ?? null;
 
@@ -34,15 +62,12 @@ class AsistenciaController {
 
         $charla = $this->charlaModel->getOne($id_charla);
         if (!$charla) {
-            die("Error: La charla no existe.");
+            die("Error: La charla seleccionada no existe.");
         }
 
         require_once 'Views/asistencias/showLector.php'; 
     }
 
-    /**
-     * Procesa el registro mediante AJAX (Llamado desde el JS del lector)
-     */
     public function registrar() {
         header('Content-Type: application/json');
 
@@ -55,74 +80,39 @@ class AsistenciaController {
                 
                 if ($resultado) {
                     $alumno = $this->model->obtenerNombreAlumno($id_alumno);
-                    // Blindaje para Azure: detectamos Nombre/nombre y Apellidos/apellidos
                     $nom = $alumno['Nombre'] ?? $alumno['nombre'] ?? "Alumno";
                     $ape = $alumno['Apellidos'] ?? $alumno['apellidos'] ?? "";
                     
                     echo json_encode([
                         'status' => 'success', 
-                        'message' => "¡Registro Correcto! Bienvenido, $nom $ape."
+                        'message' => "¡Éxito! Asistencia grabada para $nom $ape."
                     ]);
                 } else {
                     echo json_encode([
                         'status' => 'error', 
-                        'message' => 'Este alumno ya ha sido registrado en esta charla.'
+                        'message' => 'El alumno ya consta como asistente a esta charla.'
                     ]);
                 }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Faltan datos (ID Charla o ID Alumno).']);
+                echo json_encode(['status' => 'error', 'message' => 'Faltan parámetros obligatorios.']);
             }
         }
         exit;
     }
 
-    /**
-     * Muestra el listado de asistentes de una charla específica
-     */
-    public function ver() {
-        $id_charla = $_GET['id'] ?? null;
-        
-        if (!$id_charla) {
-            header("Location: " . Parameters::getBaseUrl() . "index.php?controller=Charla&action=getAll");
-            exit; 
-        }
-
-        // SQL directo para asegurar compatibilidad con los nombres de tabla de tu Azure
-        $sql = "SELECT a.ID_Asistencia, u.ID, u.Nombre, u.Apellidos, u.Email, a.Fecha_Registro 
-                FROM dbo.Tabla_Asistencia a
-                INNER JOIN dbo.Tabla_Usuarios_20260217095138 u ON a.ID_Alumno = u.ID
-                WHERE a.ID_Charla = :id_charla
-                ORDER BY a.Fecha_Registro DESC";
-
-        try {
-            $stmt = $this->model->getConn()->prepare($sql);
-            $stmt->execute([':id_charla' => $id_charla]);
-            // FETCH_OBJ para que en la vista usemos $asistente->Nombre
-            $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-            require_once 'Views/asistencias/ver.php';
-            
-        } catch (\Exception $e) {
-            die("Error en la base de datos: " . $e->getMessage());
-        }
-    }
-
-    /**
-     * Exporta los datos a CSV (Compatible con Excel)
-     */
     public function exportarExcel() {
         if (ob_get_length()) ob_end_clean();
 
         $id_charla = $_GET['id'] ?? null;
-        if (!$id_charla) die("ID de charla no válido.");
+        if (!$id_charla) die("ID de charla no válido para exportación.");
 
-        $filename = "Asistencia_Charla_" . $id_charla . "_" . date('Ymd') . ".csv";
+        $filename = "Asistentes_Charla_" . $id_charla . ".csv";
         
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
 
         $output = fopen('php://output', 'w');
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM para caracteres especiales
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); // Soporte para tildes en Excel
 
         fputcsv($output, ['ID Alumno', 'Nombre', 'Apellidos', 'Email', 'Fecha Registro']);
 
@@ -142,11 +132,7 @@ class AsistenciaController {
         exit;
     }
 
-    /**
-     * Elimina un registro de asistencia
-     */
     public function eliminar() {
-        // Sincronizado con los parámetros ?id=...&id_charla=... de ver.php
         $id_asistencia = $_GET['id'] ?? null;
         $id_charla = $_GET['id_charla'] ?? null;
 
