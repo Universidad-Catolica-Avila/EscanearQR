@@ -1,50 +1,88 @@
-<?php use Mgj\ProyectoBlog2025\Config\Parameters; ?>
-<?php require_once 'Views/layout/header.php'; ?>
+<?php 
+    use Mgj\ProyectoBlog2025\Config\Parameters; 
+    $baseUrl = Parameters::getBaseUrl();
+    
+    // Recuperamos el ID de la charla desde la URL para usarlo en botones y acciones
+    $id_charla = $_GET['id'] ?? 0;
+
+    require_once 'Views/layout/header.php'; 
+?>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Listado de Asistentes</h2>
-        <a href="<?= Parameters::$BASE_URL ?>Charla/index" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Volver
+        <div>
+            <h2 class="text-primary fw-bold mb-0">Listado de Asistentes</h2>
+            <p class="text-muted small">Visualización de alumnos registrados mediante código QR</p>
+        </div>
+        <a href="<?= $baseUrl ?>index.php?controller=Charla&action=getAll" class="btn btn-outline-secondary shadow-sm">
+            <i class="fas fa-arrow-left me-1"></i> Volver a Charlas
         </a>
     </div>
 
-    <div class="card shadow">
-        <div class="card-body">
-            <table class="table table-striped align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID Alumno</th>
-                        <th>Nombre Completo</th>
-                        <th>Email</th>
-                        <th>Hora de Registro</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($asistentes)): ?>
-                        <?php foreach($asistentes as $asistente): ?>
+    <div class="card shadow-lg border-0" style="border-radius: 12px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Email</th>
+                            <th>Hora de Registro</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        // Verificamos si la variable $asistentes (que viene del controlador) tiene datos
+                        if (!empty($asistentes)): 
+                            foreach($asistentes as $asistente): 
+                                // NORMALIZACIÓN PARA AZURE: 
+                                // SQL Server puede devolver "ID" o "id", "Nombre" o "nombre".
+                                // Usamos el operador ?? para cubrir ambas posibilidades.
+                                $idAsis = $asistente->ID_Asistencia ?? $asistente->id_asistencia ?? $asistente->ID ?? $asistente->id;
+                                $nombre = $asistente->Nombre ?? $asistente->nombre ?? 'N/A';
+                                $apellidos = $asistente->Apellidos ?? $asistente->apellidos ?? '';
+                                $email = $asistente->Email ?? $asistente->email ?? 'Sin correo';
+                                $fecha = $asistente->Fecha_Registro ?? $asistente->fecha_registro ?? $asistente->FechaHora ?? $asistente->fecha_hora ?? null;
+                        ?>
                             <tr>
-                                <td><?= $asistente->ID ?></td>
-                                <td><?= $asistente->Nombre . " " . $asistente->Apellidos ?></td>
-                                <td><?= $asistente->Email ?></td>
-                                <td><?= date('d/m/Y H:i:s', strtotime($asistente->Fecha_Registro)) ?></td>
+                                <td class="ps-4 text-muted small">#<?= $idAsis ?></td>
+                                <td>
+                                    <div class="fw-bold text-dark"><?= htmlspecialchars($nombre . " " . $apellidos) ?></div>
+                                </td>
+                                <td><?= htmlspecialchars($email) ?></td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        <i class="far fa-clock me-1 text-primary"></i>
+                                        <?= $fecha ? date('d/m/Y H:i:s', strtotime($fecha)) : '---' ?>
+                                    </span>
+                                </td>
                                 <td class="text-center">
-                                    <a href="<?= Parameters::$BASE_URL ?>Asistencia/eliminarRegistro&id_asistencia=<?= $asistente->ID_Asistencia ?>&id_charla=<?= $id_charla ?>" 
-                                       class="btn btn-danger btn-sm" 
+                                    <a href="<?= $baseUrl ?>index.php?controller=Asistencia&action=eliminar&id=<?= $idAsis ?>&id_charla=<?= $id_charla ?>" 
+                                       class="btn btn-outline-danger btn-sm border-0" 
                                        onclick="return confirm('¿Eliminar este registro de asistencia?')">
-                                        <i class="fas fa-user-minus"></i> Quitar
+                                         <i class="fas fa-trash-alt me-1"></i> Quitar
                                     </a>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="5" class="text-center text-muted p-4">Aún no hay alumnos registrados en esta charla.</td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                        <?php 
+                            endforeach; 
+                        else: 
+                        ?>
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="mb-3">
+                                        <i class="fas fa-user-slash fa-3x text-light"></i>
+                                    </div>
+                                    <h5 class="text-muted">Aún no hay alumnos registrados en esta charla.</h5>
+                                    <p class="small text-muted">Asegúrate de que los alumnos escaneen el código QR correctamente.</p>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
