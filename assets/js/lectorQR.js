@@ -17,8 +17,14 @@ function inicializarLector(baseUrl, idCharla) {
         formData.append('id_charla', idCharla);
         formData.append('id_alumno', decodedText);
 
-        // Petición AJAX al controlador AsistenciaController, método registrar
-        fetch(baseUrl + 'Asistencia/registrar', {
+        /**
+         * CORRECCIÓN PARA AZURE:
+         * Cambiamos la URL de 'Asistencia/registrar' a 
+         * 'index.php?controller=Asistencia&action=registrar'
+         */
+        const fetchUrl = baseUrl + 'index.php?controller=Asistencia&action=registrar';
+
+        fetch(fetchUrl, {
             method: 'POST',
             body: formData
         })
@@ -51,23 +57,21 @@ function inicializarLector(baseUrl, idCharla) {
 
     // 3. Configuración del área de escaneo
     const config = { 
-        fps: 15, // Un poco más de frames para mayor fluidez
+        fps: 15, 
         qrbox: { width: 250, height: 250 },
         aspectRatio: 1.0 
     };
     
     // 4. Iniciar la cámara
-    // "environment" intenta usar la cámara trasera en móviles
     html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
     .catch(err => {
-        // Manejo de errores específico
         statusMsg.style.display = 'block';
         statusMsg.className = 'alert alert-warning mt-3';
         
         if (err.name === 'NotFoundError' || err.toString().includes("Requested device not found")) {
-            statusMsg.innerHTML = "<strong>Cámara no detectada:</strong> Por favor, conecte una cámara o use un dispositivo con lente.";
+            statusMsg.innerHTML = "<strong>Cámara no detectada:</strong> Por favor, conecte una cámara.";
         } else if (err.name === 'NotAllowedError') {
-            statusMsg.innerHTML = "<strong>Sin permisos:</strong> Debe permitir el acceso a la cámara en su navegador.";
+            statusMsg.innerHTML = "<strong>Sin permisos:</strong> Debe permitir el acceso a la cámara.";
         } else {
             statusMsg.innerHTML = "<strong>Error de cámara:</strong> " + err;
         }

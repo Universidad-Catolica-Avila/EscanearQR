@@ -13,7 +13,7 @@ $baseUrl = Parameters::getBaseUrl();
     <title>UCAV - Gestión Académica</title>
     
     <link rel="stylesheet" type="text/css" href="<?= $baseUrl ?>assets/css/zebra_pagination.css" />
-    <link rel="stylesheet" href="<?= $baseUrl ?>assets/css/style.css?v=1.7">
+    <link rel="stylesheet" href="<?= $baseUrl ?>assets/css/style.css?v=1.9">
     <link rel="stylesheet" href="<?= $baseUrl ?>assets/bootstrap-5.3.8-dist/css/bootstrap.min.css">
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -42,22 +42,20 @@ $baseUrl = Parameters::getBaseUrl();
 
 <nav class="navbar" style="background-color: #002244; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
     <div class="container">
-        <button class="menu-toggle" aria-label="Abrir menú">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
+        <button class="menu-toggle" aria-label="Abrir menú" style="background: none; border: none; color: white; font-size: 1.5rem; display: none;">
+            <i class="fas fa-bars"></i>
         </button>
         
         <ul class="nav-links d-flex align-items-center list-unstyled mb-0 w-100 justify-content-between">
             <div class="group-main d-flex">
                 <?php if (Authentication::isUserLogged()): ?>
                     <li class="me-3">
-                        <a href="<?= $baseUrl ?>Asistencia/getAll" class="text-white text-decoration-none p-2">
+                        <a href="<?= $baseUrl ?>index.php?controller=Asistencia&action=getAll" class="text-white text-decoration-none p-2 hover-link">
                             <i class="fas fa-clipboard-list me-1"></i> Asistencia
                         </a>
                     </li>
                     <li class="me-3">
-                        <a href="<?= $baseUrl ?>Charla/getAll" class="text-white text-decoration-none p-2">
+                        <a href="<?= $baseUrl ?>index.php?controller=Charla&action=getAll" class="text-white text-decoration-none p-2 hover-link">
                             <i class="fas fa-microphone me-1"></i> Charlas
                         </a>
                     </li>
@@ -67,29 +65,29 @@ $baseUrl = Parameters::getBaseUrl();
             <div class="group-auth d-flex align-items-center">
                 <?php if (!Authentication::isUserLogged()): ?>
                     <li class="me-2">
-                        <a href='<?= $baseUrl ?>Usuario/showLogin' class="text-white text-decoration-none">
+                        <a href='<?= $baseUrl ?>index.php?controller=Usuario&action=showLogin' class="text-white text-decoration-none">
                             <i class="fas fa-sign-in-alt me-1"></i> Login
                         </a>
                     </li>
                     <li>
-                        <a href='<?= $baseUrl ?>Usuario/showRegister' class='btn btn-warning btn-sm fw-bold'>Registro</a>
+                        <a href='<?= $baseUrl ?>index.php?controller=Usuario&action=showRegister' class='btn btn-warning btn-sm fw-bold shadow-sm'>Registro</a>
                     </li>
                 <?php else: ?>                                        
                     <li class='dropdown position-relative'>
                         <button class='btn btn-outline-light btn-sm dropdown-toggle' type="button" id='userMenuBtn'>
                             <i class="fas fa-user-circle me-1"></i>
-                            <?= (isset($_SESSION["user"]->nombre)) ? $_SESSION["user"]->nombre : "Usuario" ?>
+                            <?= (isset($_SESSION["user"]->Nombre)) ? htmlspecialchars($_SESSION["user"]->Nombre) : "Usuario" ?>
                         </button>
                         
-                        <ul class="dropdown-menu-custom shadow" style="display: none; position: absolute; right: 0; background: white; min-width: 160px; border-radius: 8px; list-style: none; padding: 10px; margin-top: 5px; z-index: 1000;">
+                        <ul class="dropdown-menu-custom shadow" id="userDropdown" style="display: none; position: absolute; right: 0; background: white; min-width: 160px; border-radius: 8px; list-style: none; padding: 10px; margin-top: 5px; z-index: 1000;">
                             <li>
-                                <a href='<?= $baseUrl ?>Usuario/showEditar' class="text-dark text-decoration-none d-block p-2">
+                                <a href='<?= $baseUrl ?>index.php?controller=Usuario&action=showEditar' class="text-dark text-decoration-none d-block p-2">
                                     <i class="fas fa-user-edit me-2"></i>Mi Perfil
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a href='<?= $baseUrl."Usuario/closeSession" ?>' class='logout-link text-danger text-decoration-none d-block p-2'>
+                                <a href='<?= $baseUrl ?>index.php?controller=Usuario&action=closeSession' class='logout-link text-danger text-decoration-none d-block p-2'>
                                     <i class="fas fa-power-off me-2"></i>Cerrar Sesión
                                 </a>
                             </li>
