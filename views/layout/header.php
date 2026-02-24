@@ -1,6 +1,8 @@
 <?php
 use Mgj\ProyectoBlog2025\Config\Parameters;
 use Mgj\ProyectoBlog2025\Helpers\Authentication;
+
+$baseUrl = Parameters::getBaseUrl();
 ?>     
 
 <!DOCTYPE html>
@@ -10,21 +12,21 @@ use Mgj\ProyectoBlog2025\Helpers\Authentication;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCAV - Gestión Académica</title>
     
-    <link rel="stylesheet" type="text/css" href="<?=Parameters::$BASE_URL?>assets/css/zebra_pagination.css" />
-    <link rel="stylesheet" href="<?= Parameters::$BASE_URL ?>assets/css/style.css?v=1.7">
-    <link rel="stylesheet" href="<?= Parameters::$BASE_URL ?>assets/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= $baseUrl ?>assets/css/zebra_pagination.css" />
+    <link rel="stylesheet" href="<?= $baseUrl ?>assets/css/style.css?v=1.7">
+    <link rel="stylesheet" href="<?= $baseUrl ?>assets/bootstrap-5.3.8-dist/css/bootstrap.min.css">
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script src="<?=Parameters::$BASE_URL?>assets/js/main.js" defer></script>
+    <script src="<?= $baseUrl ?>assets/js/main.js" defer></script>
 </head>
 <body>
 
 <header class="main-header" style="background-color: #003366; color: white; padding: 10px 0; border-bottom: 4px solid #ffcc00;">
     <div class="container d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center">
-            <img src="<?= Parameters::$BASE_URL ?>assets/img/logoUcav.png" alt="Logo UCAV" style="height: 60px; margin-right: 20px;">
+            <img src="<?= $baseUrl ?>assets/img/logoUcav.png" alt="Logo UCAV" style="height: 60px; margin-right: 20px;">
             <div class="header-titles">
                 <h1 style="margin: 0; font-size: 1.4rem; font-weight: 700;">Universidad Católica de Ávila</h1>
                 <p style="margin: 0; font-size: 0.85rem; color: #ffcc00; text-transform: uppercase; letter-spacing: 1px;">Gestión de Asistencias a Charlas</p>
@@ -49,15 +51,29 @@ use Mgj\ProyectoBlog2025\Helpers\Authentication;
         <ul class="nav-links d-flex align-items-center list-unstyled mb-0 w-100 justify-content-between">
             <div class="group-main d-flex">
                 <?php if (Authentication::isUserLogged()): ?>
-                    <li class="me-3"><a href="<?= Parameters::$BASE_URL ?>Asistencia/getAll" class="text-white text-decoration-none p-2"><i class="fas fa-clipboard-list me-1"></i> Asistencia</a></li>
-                    <li class="me-3"><a href="<?= Parameters::$BASE_URL ?>Charla/getAll" class="text-white text-decoration-none p-2"><i class="fas fa-microphone me-1"></i> Charlas</a></li>
+                    <li class="me-3">
+                        <a href="<?= $baseUrl ?>Asistencia/getAll" class="text-white text-decoration-none p-2">
+                            <i class="fas fa-clipboard-list me-1"></i> Asistencia
+                        </a>
+                    </li>
+                    <li class="me-3">
+                        <a href="<?= $baseUrl ?>Charla/getAll" class="text-white text-decoration-none p-2">
+                            <i class="fas fa-microphone me-1"></i> Charlas
+                        </a>
+                    </li>
                 <?php endif; ?>
             </div>
 
             <div class="group-auth d-flex align-items-center">
                 <?php if (!Authentication::isUserLogged()): ?>
-                    <li class="me-2"><a href='<?= Parameters::$BASE_URL ?>Usuario/showLogin' class="text-white text-decoration-none"><i class="fas fa-sign-in-alt me-1"></i> Login</a></li>
-                    <li><a href='<?= Parameters::$BASE_URL ?>Usuario/showRegister' class='btn btn-warning btn-sm fw-bold'>Registro</a></li>
+                    <li class="me-2">
+                        <a href='<?= $baseUrl ?>Usuario/showLogin' class="text-white text-decoration-none">
+                            <i class="fas fa-sign-in-alt me-1"></i> Login
+                        </a>
+                    </li>
+                    <li>
+                        <a href='<?= $baseUrl ?>Usuario/showRegister' class='btn btn-warning btn-sm fw-bold'>Registro</a>
+                    </li>
                 <?php else: ?>                                        
                     <li class='dropdown position-relative'>
                         <button class='btn btn-outline-light btn-sm dropdown-toggle' type="button" id='userMenuBtn'>
@@ -66,9 +82,17 @@ use Mgj\ProyectoBlog2025\Helpers\Authentication;
                         </button>
                         
                         <ul class="dropdown-menu-custom shadow" style="display: none; position: absolute; right: 0; background: white; min-width: 160px; border-radius: 8px; list-style: none; padding: 10px; margin-top: 5px; z-index: 1000;">
-                            <li><a href='<?= Parameters::$BASE_URL ?>Usuario/showEditar' class="text-dark text-decoration-none d-block p-2"><i class="fas fa-user-edit me-2"></i>Mi Perfil</a></li>
+                            <li>
+                                <a href='<?= $baseUrl ?>Usuario/showEditar' class="text-dark text-decoration-none d-block p-2">
+                                    <i class="fas fa-user-edit me-2"></i>Mi Perfil
+                                </a>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a href='<?= Parameters::$BASE_URL."Usuario/closeSession" ?>' class='logout-link text-danger text-decoration-none d-block p-2'><i class="fas fa-power-off me-2"></i>Cerrar Sesión</a></li>
+                            <li>
+                                <a href='<?= $baseUrl."Usuario/closeSession" ?>' class='logout-link text-danger text-decoration-none d-block p-2'>
+                                    <i class="fas fa-power-off me-2"></i>Cerrar Sesión
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 <?php endif; ?>

@@ -21,7 +21,7 @@ class AsistenciaController {
     $id_charla = $_GET['id'] ?? null;
 
     if (!$id_charla) {
-        header("Location: " . Parameters::$BASE_URL . "Charla/index");
+        header("Location: " . Parameters::getBaseUrl() . "Charla/index");
         exit;
     }
 
@@ -73,7 +73,10 @@ class AsistenciaController {
 }
 
 public function getAll() {
-    $registros = $this->model->obtenerListadoCompleto();
+    $asistenciaModel = new \Mgj\ProyectoBlog2025\Models\AsistenciaModel();
+    $registros = $asistenciaModel->getAll(); 
+    
+    $baseUrl = \Mgj\ProyectoBlog2025\Config\Parameters::getBaseUrl();
     
     require_once 'Views/asistencias/showAll.php';
 }
@@ -120,7 +123,11 @@ public function exportarExcel() {
 
 public function ver() {
     $id_charla = $_GET['id'] ?? null;
-    if (!$id_charla) header("Location: " . Parameters::$BASE_URL . "Charla/showAll");
+    
+    if (!$id_charla) {
+        header("Location: " . \Mgj\ProyectoBlog2025\Config\Parameters::getBaseUrl() . "Charla/showAll");
+        exit; 
+    }
 
     $sql = "SELECT a.ID_Asistencia, u.ID, u.Nombre, u.Apellidos, u.Email, a.Fecha_Registro 
             FROM dbo.Tabla_Asistencia a
@@ -128,11 +135,16 @@ public function ver() {
             WHERE a.ID_Charla = :id_charla
             ORDER BY a.Fecha_Registro DESC";
 
-    $stmt = $this->model->getConn()->prepare($sql);
-    $stmt->execute([':id_charla' => $id_charla]);
-    $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
+    try {
+        $stmt = $this->model->getConn()->prepare($sql);
+        $stmt->execute([':id_charla' => $id_charla]);
+        $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
 
-    require_once 'Views/asistencias/ver.php';
+        require_once 'Views/asistencias/ver.php';
+        
+    } catch (\Exception $e) {
+        die("Error al recuperar los asistentes: " . $e->getMessage());
+    }
 }
 
 public function eliminarRegistro() {
@@ -146,6 +158,7 @@ public function eliminarRegistro() {
         $_SESSION['completado'] = "Asistente eliminado correctamente.";
     }
 
-    header("Location: " . Parameters::$BASE_URL . "Asistencia/ver&id=" . $id_charla);
+    header("Location: " . Parameters::getBaseUrl() . "Asistencia/ver&id=" . $id_charla);
+    exit;
 }
 }

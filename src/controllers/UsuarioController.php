@@ -57,7 +57,11 @@ class UsuarioController{
     }
 
     public function showLogin(){
-        ViewController::show('views/usuarios/showLogin.php');
+    $baseUrl = \Mgj\ProyectoBlog2025\Config\Parameters::getBaseUrl();
+    
+    require_once 'views/layout/header.php'; 
+    require_once 'views/usuarios/showLogin.php';
+    require_once 'views/layout/footer.php';
     }
 
     public function login(){
@@ -71,7 +75,6 @@ class UsuarioController{
         
         if ($usuario) {
             $dbPassword = $usuario->Password; 
-
             $verify = password_verify($password, $dbPassword);
 
             if ($verify || $password === $dbPassword){
@@ -83,7 +86,7 @@ class UsuarioController{
     }
 
     if ($estadoLogin) {
-        header("Location: " . Parameters::$BASE_URL);
+        header("Location: " . Parameters::getBaseUrl());
         exit(); 
     } else {
         $_SESSION["statusLastAction"] = [
@@ -95,11 +98,11 @@ class UsuarioController{
 }
 
     public function closeSession(){
-        if (Authentication::isUserLogged()) unset($_SESSION['user']);
-        
-        header("Location: " . PARAMETERS::$BASE_URL);
-        exit();
-    }
+    if (Authentication::isUserLogged()) unset($_SESSION['user']);
+    
+    header("Location: " . Parameters::getBaseUrl());
+    exit();
+}
 
     public function getAllUsers(){
         $usuarioModel = new UsuarioModel();

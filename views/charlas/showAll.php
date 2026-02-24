@@ -1,13 +1,15 @@
 <?php
     use Mgj\ProyectoBlog2025\Config\Parameters;
     $tituloPagina = "Listado de Charlas y Asistencia";
+    
+    $baseUrl = Parameters::getBaseUrl();
 ?>
 <?php require_once 'Views/layout/header.php'; ?>
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><?= $tituloPagina ?></h2>
-        <a href="<?= Parameters::$BASE_URL ?>Charla/crear" class="btn btn-primary shadow-sm">
+        <h2><i class="fas fa-microphone me-2"></i><?= $tituloPagina ?></h2>
+        <a href="<?= $baseUrl ?>Charla/crear" class="btn btn-primary shadow-sm">
             <i class="fas fa-plus"></i> Nueva Charla
         </a>
     </div>
@@ -27,46 +29,49 @@
                     </thead>
                     <tbody>
                         <?php if (!empty($charlas)): ?>
-        <?php foreach($charlas as $charla): ?>
-            <?php 
-                $idActual = $charla->getIDCharla(); 
-            ?>
-            <tr>
-                <td><?= $idActual ?></td>
-                <td><strong><?= $charla->getTitulo() ?></strong></td>
-                <td><?= $charla->getLugar() ?></td>
-                <td><?= date('d/m/Y H:i', strtotime($charla->getFechaCharla())) ?></td>
-                <td class="text-center">
-                    <a href="<?= Parameters::$BASE_URL ?>Charla/editar&id=<?= $idActual ?>" 
-                       class="btn btn-warning btn-sm" style="color: black !important;">
-                       <i class="fas fa-edit"></i> Editar
-                    </a>
-                    <br>
-                    <a href="<?= Parameters::$BASE_URL ?>Charla/eliminar&id=<?= $idActual ?>" 
-                       class="btn btn-danger btn-sm" 
-                       onclick="return confirm('¿Estás seguro de que deseas eliminar esta charla?')">
-                       <i class="fas fa-trash"></i> Borrar
-                    </a>
-                    <br>
-                    <span style="color: #ccc; margin: 0 5px;">------</span>
-                    <br>
-                    <a href="<?= Parameters::$BASE_URL ?>Asistencia/lector&id=<?= $idActual ?>" class="btn btn-success btn-sm">
-                       <i class="fas fa-qrcode"></i> Lector
-                    </a>
-                    <br>
-                    <a href="<?= Parameters::$BASE_URL ?>Asistencia/ver&id=<?= $idActual ?>" class="btn btn-info btn-sm text-white">
-                       <i class="fas fa-users"></i> Lista
-                    </a>
-                    <br>
-                    <a href="<?= Parameters::$BASE_URL ?>Asistencia/exportarExcel&id=<?= $idActual ?>" class="btn btn-dark btn-sm">
-                       <i class="fas fa-file-excel"></i> Excel
-                    </a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <tr><td colspan="5" class="text-center">No hay charlas registradas.</td></tr>
-    <?php endif; ?>
+                            <?php foreach($charlas as $charla): ?>
+                                <?php 
+                                    $idActual = $charla->getIDCharla(); 
+                                ?>
+                                <tr>
+                                    <td><?= $idActual ?></td>
+                                    <td><strong><?= htmlspecialchars($charla->getTitulo()) ?></strong></td>
+                                    <td><?= htmlspecialchars($charla->getLugar()) ?></td>
+                                    <td><?= date('d/m/Y H:i', strtotime($charla->getFechaCharla())) ?></td>
+                                    <td class="text-center">
+                                        <div class="btn-group mb-1">
+                                            <a href="<?= $baseUrl ?>Charla/editar&id=<?= $idActual ?>" 
+                                               class="btn btn-warning btn-sm shadow-sm" style="color: black !important;">
+                                               <i class="fas fa-edit"></i> Editar
+                                            </a>
+                                            <a href="<?= $baseUrl ?>Charla/eliminar&id=<?= $idActual ?>" 
+                                               class="btn btn-danger btn-sm shadow-sm" 
+                                               onclick="return confirm('¿Estás seguro de que deseas eliminar esta charla?')">
+                                               <i class="fas fa-trash"></i> Borrar
+                                            </a>
+                                        </div>
+                                        
+                                        <div class="d-block mb-1">
+                                            <hr class="my-1 opacity-25">
+                                        </div>
+
+                                        <div class="btn-group">
+                                            <a href="<?= $baseUrl ?>Asistencia/lector&id=<?= $idActual ?>" class="btn btn-success btn-sm shadow-sm">
+                                               <i class="fas fa-qrcode"></i> Lector
+                                            </a>
+                                            <a href="<?= $baseUrl ?>Asistencia/ver&id=<?= $idActual ?>" class="btn btn-info btn-sm text-white shadow-sm">
+                                               <i class="fas fa-users"></i> Lista
+                                            </a>
+                                            <a href="<?= $baseUrl ?>Asistencia/exportarExcel&id=<?= $idActual ?>" class="btn btn-dark btn-sm shadow-sm">
+                                               <i class="fas fa-file-excel"></i> Excel
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr><td colspan="5" class="text-center py-4">No hay charlas registradas.</td></tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
