@@ -80,7 +80,7 @@
                             <button type="submit" class="btn btn-primary px-5 shadow">
                                 <i class="fas fa-save me-1"></i> 
                                 <?php 
-                                    // Comprobación segura: si no existe la variable, por defecto es 'Registrar'
+                                    // Usamos una comprobación simple para evitar que el script muera
                                     if (isset($modo) && $modo === 'crear') {
                                         echo "Registrar Charla";
                                     } else {
