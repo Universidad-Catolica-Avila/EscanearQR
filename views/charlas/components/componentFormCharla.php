@@ -72,15 +72,22 @@
 
                         <hr class="my-4">
 
-                        <div class="d-flex justify-content-between align-items-center">
-                            <a href="<?= Parameters::$BASE_URL ?>Charla/index" class="btn btn-outline-secondary">
-                                <i class="fas fa-times me-1"></i> Cancelar
-                            </a>
-                            <button type="submit" class="btn btn-success px-5 shadow-sm">
-                                <i class="fas fa-save me-1"></i> 
-                                <?= ($modo === "crear") ? "Registrar Charla" : "Guardar Cambios" ?>
-                            </button>
-                        </div>
+                            <div class="d-flex justify-content-center gap-3" style="margin-top: 20px; padding-bottom: 20px;">
+                                <a href="<?= Parameters::$BASE_URL ?>Charla/index" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i> Cancelar
+                                </a>
+
+                                <button type="submit" class="btn btn-primary px-5 shadow">
+                                    <i class="fas fa-save me-1"></i> 
+                                    <?php 
+                                        if (isset($modo) && $modo === 'crear') {
+                                            echo "Registrar Charla";
+                                        } else {
+                                            echo "Guardar Cambios";
+                                        }
+                                    ?>
+                                </button>
+                            </div>
 
                     </form>
                 </div>
