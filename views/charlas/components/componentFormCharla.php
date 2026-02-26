@@ -72,22 +72,23 @@
 
                         <hr class="my-4">
 
-                            <div class="d-flex justify-content-center gap-3" style="margin-top: 20px; padding-bottom: 20px;">
-                                <a href="<?= Parameters::$BASE_URL ?>Charla/index" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-1"></i> Cancelar
-                                </a>
+                            <div class="d-flex justify-content-center gap-3 mb-3">
+                            <a href="<?= Mgj\ProyectoBlog2025\Config\Parameters::$BASE_URL ?>Charla/index" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-times me-1"></i> Cancelar
+                            </a>
 
-                                <button type="submit" class="btn btn-primary px-5 shadow">
-                                    <i class="fas fa-save me-1"></i> 
-                                    <?php 
-                                        if (isset($modo) && $modo === 'crear') {
-                                            echo "Registrar Charla";
-                                        } else {
-                                            echo "Guardar Cambios";
-                                        }
-                                    ?>
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-primary px-5 shadow">
+                                <i class="fas fa-save me-1"></i> 
+                                <?php 
+                                    // Comprobación segura: si no existe la variable, por defecto es 'Registrar'
+                                    if (isset($modo) && $modo === 'crear') {
+                                        echo "Registrar Charla";
+                                    } else {
+                                        echo "Guardar Cambios";
+                                    }
+                                ?>
+                            </button>
+                        </div>
 
                     </form>
                 </div>
