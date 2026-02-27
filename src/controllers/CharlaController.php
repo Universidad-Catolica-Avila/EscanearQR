@@ -33,33 +33,35 @@ class CharlaController {
 
     public function crear() {
         $tituloPagina = "Nueva Charla";
-        $formAction = Parameters::getBaseUrl() . "Charla/save";
+        $formAction = Parameters::getBaseUrl() . "index.php?controller=Charla&action=save";
         $modo = "crear";
         
         require_once 'Views/charlas/components/componentFormCharla.php';
     }
 
     public function editar() {
-        $id = $_GET['id'] ?? null;
-        if (!$id) {
-            header("Location: " . Parameters::getBaseUrl() . "Charla/index");
-            exit;
-        }
-
-        $charla = $this->model->getOne($id);
-
-        if (!$charla) {
-            $_SESSION['error'] = "La charla no existe.";
-            header("Location: " . Parameters::getBaseUrl() . "Charla/index");
-            exit;
-        }
-
-        $tituloPagina = "Editar Charla";
-        $formAction = Parameters::getBaseUrl() . "Charla/save";
-        $modo = "editar";
-
-        require_once 'Views/charlas/components/componentFormCharla.php';
+    $id = $_GET['id'] ?? null;
+    
+    if (!$id) {
+        header("Location: " . Parameters::getBaseUrl() . "index.php?controller=Charla&action=getAll");
+        exit;
     }
+
+    $charla = $this->model->getOne($id);
+
+    if (!$charla) {
+        $_SESSION['error'] = "La charla no existe.";
+        header("Location: " . Parameters::getBaseUrl() . "index.php?controller=Charla&action=getAll");
+        exit;
+    }
+
+    $tituloPagina = "Editar Charla";
+    
+    $formAction = Parameters::getBaseUrl() . "index.php?controller=Charla&action=save";
+    $modo = "editar";
+
+    require_once 'Views/charlas/components/componentFormCharla.php';
+}
 
     public function eliminar() {
         $id = $_GET['id'] ?? null;
@@ -89,43 +91,46 @@ class CharlaController {
     }
 
     public function save() {
-        $id_charla = $_POST['id_charla'] ?? null; 
-        $titulo    = $_POST['titulo'] ?? null;
-        $lugar     = $_POST['lugar'] ?? null;
-        $fecha     = $_POST['fecha'] ?? null;
+    $id_charla = $_POST['id_charla'] ?? null; 
+    $titulo    = $_POST['titulo'] ?? null;
+    $lugar     = $_POST['lugar'] ?? null;
+    $fecha     = $_POST['fecha'] ?? null;
 
-        if ($titulo && $lugar && $fecha) {
-            $fechaSQL = str_replace('T', ' ', $fecha);
+    if ($titulo && $lugar && $fecha) {
+        $fechaSQL = str_replace('T', ' ', $fecha);
 
-            try {
-                $db = $this->model->getConn();
+        try {
+            $db = $this->model->getConn();
 
-                if ($id_charla) {
-                    $sql = "UPDATE dbo.Tabla_Charlas 
-                            SET Titulo = :titulo, Lugar = :lugar, Fecha_Charla = :fecha 
-                            WHERE ID_Charla = :id";
-                    $stmt = $db->prepare($sql);
-                    $stmt->bindValue(':id', $id_charla);
-                } else {
-                    $sql = "INSERT INTO dbo.Tabla_Charlas (Titulo, Fecha_Charla, Lugar) 
-                            VALUES (:titulo, :fecha, :lugar)";
-                    $stmt = $db->prepare($sql);
-                }
-
-                $stmt->bindValue(':titulo', $titulo);
-                $stmt->bindValue(':fecha', $fechaSQL);
-                $stmt->bindValue(':lugar', $lugar);
-
-                if ($stmt->execute()) {
-                    $_SESSION['completado'] = "Guardado con éxito.";
-                } else {
-                    $_SESSION['error'] = "Error al ejecutar en BD.";
-                }
-            } catch (\Exception $e) {
-                $_SESSION['error'] = "Error: " . $e->getMessage();
+            if ($id_charla) {
+                $sql = "UPDATE dbo.Tabla_Charlas 
+                        SET Titulo = :titulo, Lugar = :lugar, Fecha_Charla = :fecha 
+                        WHERE ID_Charla = :id";
+                $stmt = $db->prepare($sql);
+                $stmt->bindValue(':id', $id_charla, \PDO::PARAM_INT);
+            } else {
+                $sql = "INSERT INTO dbo.Tabla_Charlas (Titulo, Fecha_Charla, Lugar) 
+                        VALUES (:titulo, :fecha, :lugar)";
+                $stmt = $db->prepare($sql);
             }
+
+            $stmt->bindValue(':titulo', $titulo);
+            $stmt->bindValue(':fecha', $fechaSQL);
+            $stmt->bindValue(':lugar', $lugar);
+
+            if ($stmt->execute()) {
+                $_SESSION['completado'] = "La charla se ha guardado correctamente.";
+            } else {
+                $_SESSION['error'] = "No se pudo guardar en la base de datos.";
+            }
+        } catch (\Exception $e) {
+            $_SESSION['error'] = "Error de conexión o consulta: " . $e->getMessage();
         }
-        header("Location: " . Parameters::getBaseUrl() . "Charla/index");
-        exit;
+    } else {
+        $_SESSION['error'] = "Todos los campos son obligatorios.";
     }
+
+    header("Location: " . \Mgj\ProyectoBlog2025\Config\Parameters::getBaseUrl() . "index.php?controller=Charla&action=getAll");
+    exit;
+}
 }
