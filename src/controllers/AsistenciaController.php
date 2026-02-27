@@ -27,36 +27,37 @@ class AsistenciaController {
     }
 
     public function ver() {
-    $id_charla = $_GET['id'] ?? null;
-    
-    if (!$id_charla) {
-        header("Location: " . \Mgj\ProyectoBlog2025\Config\Parameters::getBaseUrl() . "index.php?controller=Charla&action=getAll");
-        exit; 
-    }
-
-    $sql = "SELECT 
-                a.ID_Asistencia, 
-                u.Nombre, 
-                u.Apellidos, 
-                u.Email, 
-                a.Fecha_Registro 
-            FROM dbo.Tabla_Asistencia a
-            INNER JOIN dbo.Tabla_Usuarios_20260217095138 u ON a.ID_Alumno = u.ID
-            WHERE a.ID_Charla = :id_charla
-            ORDER BY a.Fecha_Registro DESC";
-
-    try {
-        $stmt = $this->model->getConn()->prepare($sql);
-        $stmt->execute([':id_charla' => $id_charla]);
+        $id_charla = $_GET['id'] ?? null;
         
-        $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
+        if (!$id_charla) {
+            header("Location: " . \Mgj\ProyectoBlog2025\Config\Parameters::getBaseUrl() . "index.php?controller=Charla&action=getAll");
+            exit; 
+        }
 
-        require_once 'Views/asistencias/ver.php';
-        
-    } catch (\Exception $e) {
-        die("Error en Azure SQL: " . $e->getMessage());
+        $sql = "SELECT 
+                    a.ID_Asistencia, 
+                    u.ID AS ID_Alumno, 
+                    u.Nombre, 
+                    u.Apellidos, 
+                    u.Email, 
+                    a.Fecha_Registro 
+                FROM dbo.Tabla_Asistencia a
+                INNER JOIN dbo.Tabla_Usuarios_20260217095138 u ON a.ID_Alumno = u.ID
+                WHERE a.ID_Charla = :id_charla
+                ORDER BY a.Fecha_Registro DESC";
+
+        try {
+            $stmt = $this->model->getConn()->prepare($sql);
+            $stmt->execute([':id_charla' => $id_charla]);
+            
+            $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+            require_once 'Views/asistencias/ver.php';
+            
+        } catch (\Exception $e) {
+            die("Error en Azure SQL: " . $e->getMessage());
+        }
     }
-}
 
     public function lector() {
         $id_charla = $_GET['id'] ?? null;
