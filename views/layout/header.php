@@ -49,11 +49,7 @@ $baseUrl = Parameters::getBaseUrl();
         <ul class="nav-links d-flex align-items-center list-unstyled mb-0 w-100 justify-content-between">
             <div class="group-main d-flex">
                 <?php if (Authentication::isUserLogged()): ?>
-                    <li class="me-3">
-                        <a href="<?= $baseUrl ?>index.php?controller=Asistencia&action=getAll" class="text-white text-decoration-none p-2 hover-link">
-                            <i class="fas fa-clipboard-list me-1"></i> Asistencia
-                        </a>
-                    </li>
+                    
                     <li class="me-3">
                         <a href="<?= $baseUrl ?>index.php?controller=Charla&action=getAll" class="text-white text-decoration-none p-2 hover-link">
                             <i class="fas fa-microphone me-1"></i> Charlas
