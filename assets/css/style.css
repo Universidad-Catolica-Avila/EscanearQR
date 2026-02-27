@@ -67,13 +67,23 @@ a:hover { color: var(--azul-oscuro); }
   flex: 1;
 }
 
-/* ── Header ─────────────────────────────────────────────────── */
+/* ── Header (ancho completo, contenido alineado a la izquierda) */
 .main-header {
   background-color: var(--azul-oscuro) !important;
   border-bottom: 4px solid var(--dorado) !important;
-  padding: 10px 0 !important;
+  padding: 10px 2rem !important;
   box-shadow: 0 3px 14px rgba(0,0,0,0.25);
   width: 100%;
+}
+
+/* El container dentro del header NO debe tener max-width centrado */
+.main-header .container,
+.main-header > .container {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .main-header h1 {
@@ -558,9 +568,10 @@ hr { border-color: var(--gris-borde); opacity: 1; }
   font-size: 0.8rem;
   letter-spacing: 0.02em;
   border-top: 3px solid var(--dorado);
-  width: 100%;           /* ancho completo */
-  margin-top: auto;      /* empuja el footer al fondo */
-  flex-shrink: 0;        /* no se encoge nunca */
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-top: auto;
+  flex-shrink: 0;
 }
 .main-footer p { margin: 0; }
 .footer-content { max-width: 100%; margin: 0 auto; }
