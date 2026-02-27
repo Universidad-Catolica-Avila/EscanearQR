@@ -1,5 +1,6 @@
 <?php 
     use Mgj\ProyectoBlog2025\Config\Parameters;
+    $baseUrl = Parameters::getBaseUrl();
     require_once 'Views/layout/header.php'; 
 ?>
 
@@ -16,7 +17,7 @@
             <div class="card shadow-lg border-0">
                 <div class="card-header bg-primary text-white py-3">
                     <h5 class="card-title mb-0">
-                        <i class="fas <?= ($modo === 'crear') ? 'fa-calendar-plus' : 'fa-edit' ?> me-2"></i>
+                        <i class="fas <?= (isset($modo) && $modo === 'crear') ? 'fa-calendar-plus' : 'fa-edit' ?> me-2"></i>
                         Detalles de la Charla
                     </h5>
                 </div>
@@ -72,21 +73,14 @@
 
                         <hr class="my-4">
 
-                            <div class="d-flex justify-content-center gap-3 mb-3">
-                            <a href="<?= Mgj\ProyectoBlog2025\Config\Parameters::$BASE_URL ?>Charla/index" class="btn btn-outline-secondary px-4">
+                        <div class="d-flex justify-content-center gap-3 mb-3">
+                            <a href="<?= $baseUrl ?>index.php?controller=Charla&action=getAll" class="btn btn-outline-secondary px-4">
                                 <i class="fas fa-times me-1"></i> Cancelar
                             </a>
 
                             <button type="submit" class="btn btn-primary px-5 shadow">
                                 <i class="fas fa-save me-1"></i> 
-                                <?php 
-                                    // Usamos una comprobación simple para evitar que el script muera
-                                    if (isset($modo) && $modo === 'crear') {
-                                        echo "Registrar Charla";
-                                    } else {
-                                        echo "Guardar Cambios";
-                                    }
-                                ?>
+                                <?= (isset($modo) && $modo === 'crear') ? "Registrar Charla" : "Guardar Cambios" ?>
                             </button>
                         </div>
 
