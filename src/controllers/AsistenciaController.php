@@ -27,30 +27,36 @@ class AsistenciaController {
     }
 
     public function ver() {
-        $id_charla = $_GET['id'] ?? null;
-        
-        if (!$id_charla) {
-            header("Location: " . Parameters::getBaseUrl() . "index.php?controller=Asistencia&action=getAll");
-            exit; 
-        }
-
-        $sql = "SELECT a.ID_Asistencia, u.ID, u.Nombre, u.Apellidos, u.Email, a.Fecha_Registro 
-                FROM dbo.Tabla_Asistencia a
-                INNER JOIN dbo.Tabla_Usuarios_20260217095138 u ON a.ID_Alumno = u.ID
-                WHERE a.ID_Charla = :id_charla
-                ORDER BY a.Fecha_Registro DESC";
-
-        try {
-            $stmt = $this->model->getConn()->prepare($sql);
-            $stmt->execute([':id_charla' => $id_charla]);
-            $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
-
-            require_once 'Views/asistencias/ver.php';
-            
-        } catch (\Exception $e) {
-            die("Error crítico de base de datos: " . $e->getMessage());
-        }
+    $id_charla = $_GET['id'] ?? null;
+    
+    if (!$id_charla) {
+        header("Location: " . \Mgj\ProyectoBlog2025\Config\Parameters::getBaseUrl() . "index.php?controller=Charla&action=getAll");
+        exit; 
     }
+
+    $sql = "SELECT 
+                a.ID_Asistencia, 
+                u.Nombre, 
+                u.Apellidos, 
+                u.Email, 
+                a.Fecha_Registro 
+            FROM dbo.Tabla_Asistencia a
+            INNER JOIN dbo.Tabla_Usuarios_20260217095138 u ON a.ID_Alumno = u.ID
+            WHERE a.ID_Charla = :id_charla
+            ORDER BY a.Fecha_Registro DESC";
+
+    try {
+        $stmt = $this->model->getConn()->prepare($sql);
+        $stmt->execute([':id_charla' => $id_charla]);
+        
+        $asistentes = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+        require_once 'Views/asistencias/ver.php';
+        
+    } catch (\Exception $e) {
+        die("Error en Azure SQL: " . $e->getMessage());
+    }
+}
 
     public function lector() {
         $id_charla = $_GET['id'] ?? null;

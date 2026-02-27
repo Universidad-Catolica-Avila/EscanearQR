@@ -10,7 +10,7 @@
 <div class="container mt-4">
     <?php if(isset($_SESSION['completado'])): ?>
         <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-left: 5px solid #198754 !important;">
-            <i class="fas fa-check-circle me-2"></i><strong>¡Hecho!</strong> <?= $_SESSION['completado']; ?>
+            <i class="fas fa-check-circle me-2"></i><strong>¡Éxito!</strong> <?= $_SESSION['completado']; ?>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <?php unset($_SESSION['completado']); ?>
@@ -27,7 +27,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="text-primary fw-bold mb-0">Listado de Asistentes</h2>
-            <p class="text-muted small">Visualización de alumnos registrados mediante código QR</p>
+            <p class="text-muted small">Alumnos registrados en la base de datos de Azure</p>
         </div>
         <div class="d-flex gap-2">
             <?php if (!empty($asistentes)): ?>
@@ -59,11 +59,13 @@
                         <?php 
                         if (!empty($asistentes)): 
                             foreach($asistentes as $asistente): 
-                                $idAsis    = $asistente->ID_Asistencia ?? $asistente->id_asistencia ?? $asistente->ID ?? $asistente->id;
-                                $nombre    = $asistente->Nombre ?? $asistente->nombre ?? 'N/A';
-                                $apellidos = $asistente->Apellidos ?? $asistente->apellidos ?? '';
-                                $email     = $asistente->Email ?? $asistente->email ?? 'Sin correo';
-                                $fecha     = $asistente->Fecha_Registro ?? $asistente->fecha_registro ?? null;
+                                $data = (array) $asistente;
+
+                                $idAsis    = $data['ID_Asistencia'] ?? $data['id_asistencia'] ?? $data['ID'] ?? $data['id'] ?? '0';
+                                $nombre    = $data['Nombre'] ?? $data['nombre'] ?? 'N/A';
+                                $apellidos = $data['Apellidos'] ?? $data['apellidos'] ?? '';
+                                $email     = $data['Email'] ?? $data['email'] ?? 'Sin correo';
+                                $fecha     = $data['Fecha_Registro'] ?? $data['fecha_registro'] ?? null;
                         ?>
                             <tr>
                                 <td class="ps-4 text-muted small">#<?= $idAsis ?></td>
@@ -80,7 +82,7 @@
                                 <td class="text-center">
                                     <a href="<?= $baseUrl ?>index.php?controller=Asistencia&action=eliminar&id=<?= $idAsis ?>&id_charla=<?= $id_charla ?>" 
                                        class="btn btn-outline-danger btn-sm border-0" 
-                                       onclick="return confirm('¿Estás seguro de que deseas eliminar este registro de asistencia?')">
+                                       onclick="return confirm('¿Eliminar registro?')">
                                          <i class="fas fa-trash-alt me-1"></i> Quitar
                                     </a>
                                 </td>
@@ -94,8 +96,8 @@
                                     <div class="mb-3">
                                         <i class="fas fa-user-slash fa-3x text-light"></i>
                                     </div>
-                                    <h5 class="text-muted">Aún no hay alumnos registrados en esta charla.</h5>
-                                    <p class="small text-muted">Asegúrate de que los alumnos escaneen el código QR correctamente.</p>
+                                    <h5 class="text-muted">No se encontraron asistentes con datos completos.</h5>
+                                    <p class="small text-muted">Verifique que el INNER JOIN en el controlador sea correcto.</p>
                                 </td>
                             </tr>
                         <?php endif; ?>
