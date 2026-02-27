@@ -13,7 +13,7 @@ $baseUrl = Parameters::getBaseUrl();
     <title>UCAV - Gestión Académica</title>
     
     <link rel="stylesheet" type="text/css" href="<?= $baseUrl ?>assets/css/zebra_pagination.css" />
-    <link rel="stylesheet" href="<?= $baseUrl ?>assets/css/style.css?v=1.10">
+    <link rel="stylesheet" href="<?= $baseUrl ?>assets/css/style.css?v=1.11">
     <link rel="stylesheet" href="<?= $baseUrl ?>assets/bootstrap-5.3.8-dist/css/bootstrap.min.css">
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">

@@ -1,6 +1,6 @@
 /* ============================================================
    UCAV - Gestión de Asistencias a Charlas
-   style.css v2.1 - Layout centrado
+   style.css v2.2
    ============================================================ */
 
 /* ── Variables ─────────────────────────────────────────────── */
@@ -34,7 +34,7 @@
 
 /* ── Base ───────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; height: 100%; }
 
 body {
   margin: 0;
@@ -52,7 +52,6 @@ a { color: var(--azul-mid); text-decoration: none; }
 a:hover { color: var(--azul-oscuro); }
 
 /* ── CENTRADO GLOBAL ────────────────────────────────────────── */
-/* Centra el .container de Bootstrap y el contenido del header/nav */
 .container {
   max-width: var(--max-width) !important;
   margin-left: auto !important;
@@ -62,8 +61,6 @@ a:hover { color: var(--azul-oscuro); }
   width: 100%;
 }
 
-/* El header abre un .container.mt-4 sin cerrar en header.php,
-   así que todo el contenido de página vive dentro de él */
 .container.mt-4 {
   padding-top: 1.5rem;
   padding-bottom: 2.5rem;
@@ -148,7 +145,6 @@ a:hover { color: var(--azul-oscuro); }
   gap: 0.5rem;
 }
 
-/* Links de navegación */
 .group-main li a,
 .navbar .nav-links li a.text-white {
   color: rgba(255,255,255,0.85) !important;
@@ -197,19 +193,27 @@ a:hover { color: var(--azul-oscuro); }
   transform: translateY(-1px);
 }
 
-/* Botón usuario logueado */
+/* ── Botón usuario (mejorado) ───────────────────────────────── */
 .btn-outline-light.btn-sm.dropdown-toggle {
-  color: rgba(255,255,255,0.9) !important;
-  border-color: rgba(255,255,255,0.3) !important;
+  color: var(--blanco) !important;
+  border: 1.5px solid rgba(255,204,0,0.5) !important;
+  background: rgba(255,255,255,0.08) !important;
   font-size: 0.825rem !important;
-  border-radius: 6px !important;
-  padding: 0.35rem 0.85rem !important;
+  font-weight: 600 !important;
+  border-radius: 20px !important;
+  padding: 0.38rem 1rem !important;
   transition: all var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.02em;
 }
 .btn-outline-light.btn-sm.dropdown-toggle:hover {
-  background: rgba(255,255,255,0.15) !important;
+  background: rgba(255,204,0,0.15) !important;
   border-color: var(--dorado) !important;
   color: var(--dorado) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
 /* Dropdown menú usuario */
@@ -220,6 +224,9 @@ a:hover { color: var(--azul-oscuro); }
   border: 1px solid var(--gris-borde);
   padding: 6px !important;
   min-width: 170px;
+  position: absolute;
+  right: 0;
+  z-index: 1000;
 }
 
 .dropdown-menu-custom li a {
@@ -261,10 +268,8 @@ a:hover { color: var(--azul-oscuro); }
   border-radius: 2px;
 }
 
-/* ── Contenido / main ───────────────────────────────────────── */
-.main-container {
-  flex: 1;
-}
+/* ── Contenido principal ────────────────────────────────────── */
+.main-container { flex: 1; }
 
 /* ── Títulos ─────────────────────────────────────────────────── */
 h2 {
@@ -280,10 +285,7 @@ h2 .fa-microphone {
   color: var(--dorado-dark);
 }
 
-p.text-muted {
-  color: var(--texto-muted) !important;
-  font-size: 0.88rem;
-}
+p.text-muted { color: var(--texto-muted) !important; font-size: 0.88rem; }
 
 /* ── Cards ──────────────────────────────────────────────────── */
 .card {
@@ -348,6 +350,35 @@ p.text-muted {
   color: var(--texto);
 }
 
+/* ── Botones de acción en tabla (en línea) ──────────────────── */
+.table td.text-center {
+  white-space: nowrap;
+}
+
+/* Ocultar los <br> entre botones de acción */
+.table td br { display: none; }
+
+/* Ocultar el separador ------ */
+.table td span[style*="color: #ccc"] { display: none !important; }
+
+/* Botones en línea con separador visual */
+.table td .btn { 
+  margin: 2px 2px;
+  vertical-align: middle;
+}
+
+/* Separador visual entre grupos Editar/Borrar y Lector/Lista/Excel */
+.table td .btn-danger.btn-sm + br + span + br + .btn-success.btn-sm::before {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: var(--gris-borde);
+  margin: 0 4px;
+  vertical-align: middle;
+}
+
+/* Código QR */
 code.bg-light {
   background: var(--azul-light) !important;
   color: var(--azul-oscuro) !important;
@@ -358,6 +389,7 @@ code.bg-light {
   padding: 0.2rem 0.5rem !important;
 }
 
+/* Badge Presente */
 .badge.bg-success-soft {
   background: var(--verde-bg) !important;
   color: var(--verde) !important;
@@ -368,16 +400,6 @@ code.bg-light {
   padding: 0.35em 0.9em;
   border-radius: 20px;
 }
-
-.table td span[style*="color: #ccc"] {
-  display: block;
-  border-top: 1px dashed var(--gris-borde);
-  margin: 5px 0;
-  color: transparent !important;
-  height: 0;
-}
-
-.table td .btn { margin-bottom: 3px; }
 
 /* ── Botones ─────────────────────────────────────────────────── */
 .btn {
@@ -508,7 +530,6 @@ code.bg-light {
   align-items: center;
   justify-content: center;
 }
-
 #reader .pt-5 { color: var(--texto-muted) !important; padding-top: 80px !important; }
 #reader .fa-camera { color: var(--azul-mid) !important; }
 
@@ -528,7 +549,7 @@ code.bg-light {
 /* ── Separadores ─────────────────────────────────────────────── */
 hr { border-color: var(--gris-borde); opacity: 1; }
 
-/* ── Footer ──────────────────────────────────────────────────── */
+/* ── Footer (ancho completo, pegado abajo) ──────────────────── */
 .main-footer {
   background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-nav) 100%);
   color: rgba(255,255,255,0.65);
@@ -537,11 +558,12 @@ hr { border-color: var(--gris-borde); opacity: 1; }
   font-size: 0.8rem;
   letter-spacing: 0.02em;
   border-top: 3px solid var(--dorado);
-  margin-top: auto;
-  width: 100%;
+  width: 100%;           /* ancho completo */
+  margin-top: auto;      /* empuja el footer al fondo */
+  flex-shrink: 0;        /* no se encoge nunca */
 }
 .main-footer p { margin: 0; }
-.footer-content { max-width: 600px; margin: 0 auto; }
+.footer-content { max-width: 100%; margin: 0 auto; }
 
 /* ── Overrides Bootstrap ─────────────────────────────────────── */
 .text-primary { color: var(--azul-mid) !important; }
@@ -554,6 +576,12 @@ hr { border-color: var(--gris-borde); opacity: 1; }
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 1240px) {
   .container { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+}
+
+@media (max-width: 992px) {
+  /* Botones de acción en tabla: permitir wrap en pantallas medianas */
+  .table td.text-center { white-space: normal; }
+  .table td .btn { margin: 2px; }
 }
 
 @media (max-width: 768px) {
@@ -586,12 +614,7 @@ hr { border-color: var(--gris-borde); opacity: 1; }
   }
 
   h2 { font-size: 1.15rem; }
-
-  .d-flex.justify-content-between {
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
+  .d-flex.justify-content-between { flex-wrap: wrap; gap: 0.75rem; }
   .table-responsive { font-size: 0.82rem; }
   .card-body { padding: 1rem !important; }
 }
